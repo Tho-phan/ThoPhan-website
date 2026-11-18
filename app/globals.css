@@ -75,6 +75,10 @@ h1, h2, h3 {
 .sway { transform-origin: 50% 100%; animation: sway 7s ease-in-out infinite alternate; }
 @keyframes sway { from { transform: rotate(-1.4deg); } to { transform: rotate(1.4deg); } }
 
+/* Hero photographs crossfade with the city */
+.hero-photo { opacity: 0; transition: opacity 1s ease; }
+[data-tenant="vn"] .hero-vn, [data-tenant="us"] .hero-us { opacity: 1; }
+
 /* Data packet travelling between the two cities */
 .packet {
   offset-path: path("M 40 80 C 180 -10, 420 -10, 560 80");
@@ -97,6 +101,7 @@ h1, h2, h3 {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .sway, .packet, .root-line { animation: none; }
+  .hero-photo { transition: none; }
   .packet { offset-distance: 50%; }
   .root-line { stroke-dashoffset: 0; }
 }

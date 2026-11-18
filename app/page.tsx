@@ -1,3 +1,4 @@
+import Image from "next/image";
 import CityRoute from "@/components/CityRoute";
 import ContactForm from "@/components/ContactForm";
 import JobQueue from "@/components/JobQueue";
@@ -6,19 +7,32 @@ import TenantSwitch from "@/components/TenantSwitch";
 import Trees from "@/components/Trees";
 import { cases, jobs, profile, tutoring } from "@/lib/content";
 
-const h2 = "text-3xl font-bold md:text-4xl";
+const h2 = "text-4xl font-bold md:text-5xl";
+
 
 export default function Home() {
   return (
     <main>
       {/* Canopy: what people see */}
-      <section className="relative flex min-h-svh items-center overflow-hidden">
-        <Trees className="pointer-events-none absolute -right-10 top-8 hidden h-[620px] w-[360px] md:block lg:right-10" />
-        <div className="relative mx-auto w-full max-w-5xl px-6 py-16">
-          <p className="mb-4 font-[family-name:var(--font-display)] text-lg">{profile.name}, {profile.role.toLowerCase()}</p>
-          <h1 className="max-w-3xl text-balance text-4xl font-extrabold sm:text-5xl md:text-6xl">{profile.headline}</h1>
-          <p className="mt-6 max-w-xl text-xl">{profile.intro}</p>
-          <div className="mt-8 space-y-6">
+      <section className="relative isolate flex min-h-svh items-end overflow-hidden bg-bark text-mist">
+        <Image src="/photos/hero-vn.jpg" alt="Boats with glowing lanterns on the river at night in Hoi An" fill priority sizes="100vw" className="hero-photo hero-vn object-cover" />
+        <Image src="/photos/hero-us.jpg" alt="Downtown Pittsburgh and its yellow bridges at golden hour, seen from Mount Washington" fill priority sizes="100vw" className="hero-photo hero-us object-cover" />
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-bark/80 via-bark/25 to-transparent" />
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-bark/70 to-transparent" />
+        <header className="absolute inset-x-0 top-0 z-10">
+          <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
+            <span className="font-[family-name:var(--font-display)] text-xl font-bold">{profile.name}</span>
+            <nav aria-label="Contact" className="flex gap-6 font-[family-name:var(--font-display)] text-sm font-medium">
+              <a className="underline decoration-1 underline-offset-4" href={profile.linkedin}>LinkedIn</a>
+              <a className="underline decoration-1 underline-offset-4" href="#contact">Contact</a>
+            </nav>
+          </div>
+        </header>
+        <Trees silhouette className="pointer-events-none absolute bottom-0 right-4 hidden aspect-[300/520] h-[84%] md:block" />
+        <div className="relative mx-auto w-full max-w-5xl px-6 pb-16 pt-32 md:pb-24">
+          <h1 className="max-w-3xl text-balance text-5xl font-extrabold sm:text-6xl md:text-7xl"><span className="sr-only">{profile.name}, {profile.role}. </span>{profile.headline}</h1>
+          <p className="mt-6 max-w-xl text-xl text-mist [text-shadow:0_1px_14px_rgba(15,11,8,0.7)]">{profile.intro}</p>
+          <div className="mt-10 space-y-6">
             <TenantSwitch />
             <CityRoute />
           </div>
@@ -29,26 +43,28 @@ export default function Home() {
 
       {/* Experience */}
       <section className="relative mx-auto max-w-5xl px-6 pb-24">
-        <Trees className="pointer-events-none absolute right-0 top-0 hidden h-[420px] w-[250px] md:block" />
         <h2 className={h2}>Where I have worked</h2>
-        <ul className="mt-10 space-y-8 border-l-2 border-moss/50 pl-6">
+        <ul className="mt-12 space-y-10">
           {jobs.map((j) => (
-            <li key={j.when + j.where}>
-              <p className="font-[family-name:var(--font-display)] font-semibold">{j.where}</p>
-              <p className="text-sm">{j.when}</p>
-              <p className="mt-2 max-w-2xl">{j.what}</p>
+            <li key={j.when + j.where} className="grid gap-2 border-t border-bark/20 pt-5 md:grid-cols-[13rem_1fr] md:gap-8">
+              <div>
+                <p className="font-[family-name:var(--font-display)] font-semibold">{j.where}</p>
+                <p className="text-sm">{j.when}</p>
+              </div>
+              <p className="max-w-xl">{j.what}</p>
             </li>
           ))}
         </ul>
       </section>
 
       {/* Trunk: the work itself */}
-      <section className="mx-auto max-w-5xl px-6 pb-24">
+      <section className="bg-surface pt-24">
+       <div className="mx-auto max-w-5xl px-6 pb-16">
         <h2 className={h2}>Problems I solved</h2>
         <p className="mt-3 max-w-xl">The code is private, so these are told without names or numbers beyond what is already public.</p>
         <div className="mt-10 grid gap-10 md:grid-cols-3">
           {cases.map((c) => (
-            <article key={c.title}>
+            <article key={c.title} className="border-t-4 border-accent pt-5">
               <h3 className="text-2xl font-bold">{c.title}</h3>
               <dl className="mt-4 space-y-3">
                 <div><dt className="font-[family-name:var(--font-display)] font-semibold">The problem</dt><dd>{c.problem}</dd></div>
@@ -58,16 +74,17 @@ export default function Home() {
             </article>
           ))}
         </div>
+       </div>
       </section>
 
       {/* Ground line: a row of trees standing on the soil */}
-      <div aria-hidden="true" className="mx-auto flex max-w-6xl items-end justify-around px-4">
+      <div aria-hidden="true" className="bg-surface"><div className="mx-auto flex max-w-6xl items-end justify-around px-4">
         {[90, 140, 105, 170, 100, 150, 95].map((w, i) => (
           <div key={i} style={{ width: w }} className={`shrink-0 ${i > 2 ? "hidden md:block" : ""}`}>
             <Trees className="aspect-[300/520] w-full" />
           </div>
         ))}
-      </div>
+      </div></div>
 
       {/* Roots: under the hood */}
       <section className="relative overflow-hidden bg-bark text-mist">
@@ -99,7 +116,7 @@ export default function Home() {
             <a className="underline decoration-2 underline-offset-4" href={`mailto:${profile.email}`}>{profile.email}</a>
           </p>
         </div>
-        <div>
+        <div id="contact" className="scroll-mt-8">
           <h2 className={h2}>Say hello</h2>
           <p className="mb-6 mt-4 max-w-md">I am open to software engineering, full-stack and backend roles.</p>
           <ContactForm />
@@ -110,8 +127,9 @@ export default function Home() {
         <div className="mx-auto max-w-5xl">
           Photos from Wikimedia Commons:{" "}
           <a className="underline" href="https://commons.wikimedia.org/wiki/File:Saigon_at_Blue_Hour.jpg">Radek Kucharski</a> (CC BY 2.0),{" "}
+          <a className="underline" href="https://commons.wikimedia.org/wiki/File:Pittsburgh_Skyline.JPG">Robpinion</a> (CC BY-SA 3.0),{" "}
           <a className="underline" href="https://commons.wikimedia.org/wiki/File:Point_State_Park_in_Fall.jpg">John</a> (CC BY-SA 2.0),{" "}
-          <a className="underline" href="https://commons.wikimedia.org/wiki/File:Through_Riverfront_Trail_in_fall_foliage_(30346899375).jpg">daveynin</a> (CC BY 2.0), and a CC0 night view of Saigon.
+          <a className="underline" href="https://commons.wikimedia.org/wiki/File:Through_Riverfront_Trail_in_fall_foliage_(30346899375).jpg">daveynin</a> (CC BY 2.0), and CC0 views of Hoi An and Saigon.
         </div>
       </footer>
     </main>
