@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/* Tenant themes: Ho Chi Minh City (default) and Pittsburgh. Switching changes only these variables. */
+:root {
+  --mist: #e9efe3;
+  --canopy: #1f4d3a;
+  --moss: #6e8f4e;
+  --sun: #f2b632;
+  --bark: #2b2119;
+  --accent: #1f4d3a;
+  --leaf-a: #3f7a4f;
+  --leaf-b: #8fb35a;
+}
+[data-tenant="us"] {
+  --mist: #ecebe4;
+  --canopy: #2f3e4e;
+  --moss: #8a6b2f;
+  --sun: #e7a33a;
+  --accent: #b8452a;
+  --leaf-a: #b8452a;
+  --leaf-b: #e7a33a;
+}
+
+@theme inline {
+  --color-mist: var(--mist);
+  --color-canopy: var(--canopy);
+  --color-moss: var(--moss);
+  --color-sun: var(--sun);
+  --color-bark: var(--bark);
+  --color-accent: var(--accent);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--mist);
+  color: var(--bark);
+  font-family: var(--font-body), Georgia, serif;
+  line-height: 1.7;
+  transition: background-color 0.6s ease;
+}
+h1, h2, h3 {
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Trees: show the palm in HCMC mode and the maple in Pittsburgh mode */
+.tree-us { display: none; }
+[data-tenant="us"] .tree-us { display: block; }
+[data-tenant="us"] .tree-vn { display: none; }
+.sway { transform-origin: 50% 100%; animation: sway 7s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-1.4deg); } to { transform: rotate(1.4deg); } }
+
+/* Data packet travelling between the two cities */
+.packet {
+  offset-path: path("M 40 80 C 180 -10, 420 -10, 560 80");
+  animation: travel 4.5s ease-in-out infinite;
+}
+@keyframes travel { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+
+/* The one orchestrated moment: roots draw themselves when the soil scrolls into view */
+.root-line { stroke-dasharray: 1; stroke-dashoffset: 0; }
+@supports (animation-timeline: view()) {
+  .root-line {
+    stroke-dashoffset: 1;
+    animation: draw linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 55%;
+  }
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .sway, .packet, .root-line { animation: none; }
+  .packet { offset-distance: 50%; }
+  .root-line { stroke-dashoffset: 0; }
+}
