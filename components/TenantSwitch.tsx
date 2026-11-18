@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { flushSync } from "react-dom";
+import { switchCity } from "@/lib/switch-city";
 
 export default function TenantSwitch({ labels }: { labels: { group: string; vn: string; us: string } }) {
   const [tenant, setTenant] = useState<string>("vn");
@@ -21,8 +23,12 @@ export default function TenantSwitch({ labels }: { labels: { group: string; vn: 
           key={id}
           type="button"
           aria-pressed={tenant === id}
-          onClick={() => setTenant(id)}
-          className="cursor-pointer rounded-full px-4 py-2 font-[family-name:var(--font-display)] text-sm font-medium transition-colors aria-pressed:bg-sun aria-pressed:text-bark"
+          onClick={(e) => {
+            const r = e.currentTarget.getBoundingClientRect();
+            // flushSync so the pressed pill is already in the transition's "new" snapshot
+            switchCity(id, { x: r.left + r.width / 2, y: r.top + r.height / 2 }, () => flushSync(() => setTenant(id)));
+          }}
+          className="relative cursor-pointer rounded-full px-4 py-2 after:absolute after:inset-x-0 after:-inset-y-1 after:content-[''] font-[family-name:var(--font-display)] text-sm font-medium transition-colors aria-pressed:bg-sun aria-pressed:text-bark"
         >
           {labels[id]}
         </button>

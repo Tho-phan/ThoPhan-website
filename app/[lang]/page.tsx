@@ -1,8 +1,10 @@
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import CityChapters from "@/components/CityChapters";
 import CityRoute from "@/components/CityRoute";
 import ContactForm from "@/components/ContactForm";
+import Fx from "@/components/Fx";
 import JobQueue from "@/components/JobQueue";
 import LangSwitch from "@/components/LangSwitch";
 import TenantSwitch from "@/components/TenantSwitch";
@@ -26,25 +28,37 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <Image src="/photos/hero-us.jpg" alt={d.hero.altUs} fill priority sizes="100vw" className="hero-photo hero-us object-cover" />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-bark/80 via-bark/25 to-transparent" />
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-bark/70 to-transparent" />
+        <Fx />
         <header className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-bark/55 to-transparent">
           <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-6 py-6">
-            <span className={`${display} text-xl font-bold`}>{profile.name}</span>
+            <div className="flex items-center gap-4">
+              <span className={`${display} text-xl font-bold`}>{profile.name}</span>
+              <Link
+                href={`/${lang}/family`}
+                className={`${display} relative rounded-full bg-mist/15 px-4 py-2 text-sm font-medium backdrop-blur transition-colors after:absolute after:inset-x-0 after:-inset-y-1 after:content-[''] hover:bg-sun hover:text-bark`}
+              >
+                {d.family.nav}
+              </Link>
+            </div>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
               <LangSwitch lang={lang} label={d.nav.language} />
               <nav aria-label={d.nav.contactLabel} className={`flex gap-6 ${display} text-sm font-medium`}>
-                <a className="underline decoration-1 underline-offset-4" href={profile.linkedin}>{d.nav.linkedin}</a>
-                <a className="underline decoration-1 underline-offset-4" href="#contact">{d.nav.contact}</a>
+                <a className="py-3 underline decoration-1 underline-offset-4" href={profile.linkedin}>{d.nav.linkedin}</a>
+                <a className="py-3 underline decoration-1 underline-offset-4" href="#contact">{d.nav.contact}</a>
               </nav>
             </div>
           </div>
         </header>
-        <Trees silhouette className="pointer-events-none absolute bottom-0 right-4 hidden aspect-[300/520] h-[84%] md:block" />
+        <Trees silhouette className="hero-trees pointer-events-none absolute bottom-0 right-4 hidden aspect-[300/520] h-[84%] md:block" />
         <div className="relative mx-auto w-full max-w-5xl px-6 pb-16 pt-32 md:pb-24">
           <h1 className="max-w-3xl text-balance text-5xl font-extrabold [text-shadow:0_2px_24px_rgba(15,11,8,0.55)] sm:text-6xl md:text-7xl">
-            <span className="sr-only">{profile.name}, {d.hero.role}. </span>{d.hero.headline}
+            <span className="sr-only">{profile.name}, {d.hero.role}. </span>
+            <span>
+              {d.hero.headline.split(" ").map((w, i) => <span key={i}><span className="word" style={{ "--i": i } as React.CSSProperties}>{w}</span>{" "}</span>)}
+            </span>
           </h1>
-          <p className="mt-6 max-w-xl text-xl text-mist [text-shadow:0_1px_14px_rgba(15,11,8,0.7)]">{d.hero.intro}</p>
-          <div className="mt-10 space-y-6">
+          <p className="hero-in mt-6 max-w-xl text-xl text-mist [text-shadow:0_1px_14px_rgba(15,11,8,0.7)]" style={{ "--d": "700ms" } as React.CSSProperties}>{d.hero.intro}</p>
+          <div className="hero-in mt-10 space-y-6" style={{ "--d": "900ms" } as React.CSSProperties}>
             <TenantSwitch labels={d.tenant} />
             <CityRoute dict={d.route} />
           </div>
@@ -58,7 +72,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         <h2 className={h2}>{d.jobs.title}</h2>
         <ul className="mt-12 space-y-10">
           {d.jobs.items.map((j) => (
-            <li key={j.when + j.where} className="grid gap-2 border-t border-bark/20 pt-5 md:grid-cols-[13rem_1fr] md:gap-8">
+            <li key={j.when + j.where} className="reveal-row grid gap-2 border-t border-bark/20 pt-5 md:grid-cols-[13rem_1fr] md:gap-8">
               <div>
                 <p className={`${display} font-semibold`}>{j.where}</p>
                 <p className="text-sm">{j.when}</p>
@@ -75,8 +89,8 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           <h2 className={h2}>{d.cases.title}</h2>
           <p className="mt-3 max-w-xl">{d.cases.lead}</p>
           <div className="mt-10 grid gap-10 md:grid-cols-3">
-            {d.cases.items.map((c) => (
-              <article key={c.title} className="border-t-4 border-accent pt-5">
+            {d.cases.items.map((c, i) => (
+              <article key={c.title} className="glow reveal-card -mx-4 border-t-4 border-accent px-4 pb-4 pt-5" style={{ "--i": i } as React.CSSProperties}>
                 <h3 className="text-2xl font-bold">{c.title}</h3>
                 <dl className="mt-4 space-y-3">
                   <div><dt className={`${display} font-semibold`}>{d.cases.labels.problem}</dt><dd>{c.problem}</dd></div>
