@@ -9,7 +9,7 @@ export default function Trees({ className = "", silhouette = false }: { classNam
     <div
       aria-hidden="true"
       className={className}
-      style={silhouette ? ({ "--leaf-a": "#0f0b08", "--leaf-b": "#1b140f", "--trunk": "#0f0b08", "--nut": "#0f0b08" } as React.CSSProperties) : undefined}
+      style={silhouette ? ({ "--leaf-a": "#0f0b08", "--leaf-b": "#0f0b08", "--trunk": "#0f0b08", "--nut": "#0f0b08" } as React.CSSProperties) : undefined}
     >
       <svg className="tree-vn sway h-full w-full" viewBox="0 0 300 520" fill="none">
         <path d="M150 520 C140 420 170 340 150 250" stroke="var(--trunk, #8a6642)" strokeWidth="14" strokeLinecap="round" />
@@ -28,14 +28,10 @@ export default function Trees({ className = "", silhouette = false }: { classNam
       <svg className="tree-us sway h-full w-full" viewBox="0 0 300 520" fill="none">
         <path d="M150 520 L150 300 M150 380 L100 320 M150 350 L205 290" stroke="var(--trunk, #8a6642)" strokeWidth="13" strokeLinecap="round" />
         {[
-          [150, 200, 85],
-          [95, 255, 62],
-          [205, 245, 66],
-          [150, 275, 55],
-          [120, 170, 48],
-          [185, 165, 50],
+          [150, 190, 62], [100, 215, 50], [200, 212, 52], [150, 245, 54], [112, 160, 42], [188, 158, 44],
+          [150, 130, 38], [78, 250, 34], [224, 248, 34], [118, 270, 32], [184, 272, 32], [150, 100, 26],
         ].map(([x, y, r], i) => (
-          <circle key={i} cx={x} cy={y} r={r} fill={i % 2 ? "var(--leaf-b)" : "var(--leaf-a)"} opacity="0.92" />
+          <circle key={i} cx={x} cy={y} r={r} fill={i % 2 ? "var(--leaf-b)" : "var(--leaf-a)"} />
         ))}
       </svg>
     </div>

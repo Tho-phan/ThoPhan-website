@@ -1,8 +1,8 @@
 // Flat route between the two cities with one data packet travelling along it.
 
-export default function CityRoute() {
+export default function CityRoute({ dict }: { dict: { aria: string; from: string; to: string } }) {
   return (
-    <figure className="max-w-xl" aria-label="Data travelling between Ho Chi Minh City and Pittsburgh">
+    <figure className="max-w-xl" aria-label={dict.aria}>
       <div className="relative" style={{ aspectRatio: "600 / 130" }}>
         <svg viewBox="0 0 600 130" className="absolute inset-0 h-full w-full" fill="none" aria-hidden="true">
           <path d="M 40 80 C 180 -10, 420 -10, 560 80" stroke="var(--mist)" strokeWidth="2" strokeDasharray="3 7" strokeLinecap="round" />
@@ -15,8 +15,8 @@ export default function CityRoute() {
         />
       </div>
       <figcaption className="flex justify-between font-[family-name:var(--font-display)] text-sm font-medium">
-        <span>Ho Chi Minh City</span>
-        <span>Pittsburgh</span>
+        <span>{dict.from}</span>
+        <span>{dict.to}</span>
       </figcaption>
     </figure>
   );

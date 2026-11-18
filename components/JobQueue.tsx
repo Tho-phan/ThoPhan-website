@@ -5,14 +5,6 @@ import { useEffect, useState } from "react";
 type Status = "queued" | "active" | "failed" | "replayed" | "done";
 type Job = { id: number; status: Status };
 
-const label: Record<Status, string> = {
-  queued: "Waiting",
-  active: "Running",
-  failed: "Failed",
-  replayed: "Replaying",
-  done: "Done",
-};
-
 // Illustration of a job lifecycle (queue, run, fail, replay, finish). Not live data.
 function step(j: Job): Job {
   switch (j.status) {
@@ -24,7 +16,7 @@ function step(j: Job): Job {
   }
 }
 
-export default function JobQueue() {
+export default function JobQueue({ dict }: { dict: { aria: string; job: string; status: Record<Status, string> } }) {
   const [jobs, setJobs] = useState<Job[]>(() => [3, 2, 1].map((id) => ({ id, status: "done" as Status })));
 
   useEffect(() => {
@@ -39,16 +31,16 @@ export default function JobQueue() {
   }, []);
 
   return (
-    <ol className="space-y-2" aria-label="Example job queue" aria-live="off">
+    <ol className="space-y-2" aria-label={dict.aria} aria-live="off">
       {jobs.map((j) => (
         <li key={j.id} className="flex items-center justify-between rounded-lg bg-mist/10 px-4 py-2 font-[family-name:var(--font-display)] text-sm">
-          <span>sync-catalog batch {j.id}</span>
+          <span>{dict.job} {j.id}</span>
           <span
             className={`rounded-full px-3 py-0.5 text-xs font-semibold ${
               j.status === "failed" ? "bg-accent text-mist" : j.status === "done" ? "bg-moss text-mist" : "bg-sun text-bark"
             }`}
           >
-            {label[j.status]}
+            {dict.status[j.status]}
           </span>
         </li>
       ))}

@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const cities = [
-  { id: "vn", label: "Ho Chi Minh City" },
-  { id: "us", label: "Pittsburgh" },
-] as const;
-
-export default function TenantSwitch() {
+export default function TenantSwitch({ labels }: { labels: { group: string; vn: string; us: string } }) {
   const [tenant, setTenant] = useState<string>("vn");
 
   useEffect(() => {
@@ -20,16 +15,16 @@ export default function TenantSwitch() {
   }, [tenant]);
 
   return (
-    <div role="group" aria-label="Choose a city theme" className="inline-flex rounded-full bg-mist/15 p-1 backdrop-blur">
-      {cities.map((c) => (
+    <div role="group" aria-label={labels.group} className="inline-flex rounded-full bg-mist/15 p-1 backdrop-blur">
+      {(["vn", "us"] as const).map((id) => (
         <button
-          key={c.id}
+          key={id}
           type="button"
-          aria-pressed={tenant === c.id}
-          onClick={() => setTenant(c.id)}
+          aria-pressed={tenant === id}
+          onClick={() => setTenant(id)}
           className="cursor-pointer rounded-full px-4 py-2 font-[family-name:var(--font-display)] text-sm font-medium transition-colors aria-pressed:bg-sun aria-pressed:text-bark"
         >
-          {c.label}
+          {labels[id]}
         </button>
       ))}
     </div>
