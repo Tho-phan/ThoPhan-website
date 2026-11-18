@@ -11,7 +11,12 @@ export default function TenantSwitch() {
   const [tenant, setTenant] = useState<string>("vn");
 
   useEffect(() => {
-    document.documentElement.dataset.tenant = tenant;
+    const html = document.documentElement;
+    html.dataset.tenant = tenant;
+    // the scroll story also changes the theme, so follow the page
+    const mo = new MutationObserver(() => setTenant(html.dataset.tenant ?? "vn"));
+    mo.observe(html, { attributes: true, attributeFilter: ["data-tenant"] });
+    return () => mo.disconnect();
   }, [tenant]);
 
   return (

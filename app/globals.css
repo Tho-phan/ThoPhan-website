@@ -21,6 +21,22 @@
   --leaf-b: #e7a33a;
 }
 
+/* Token names the taste-skill moments read (public/assets/moments), mapped to this site's palette. */
+:root {
+  --bg: var(--mist);
+  --ink: var(--bark);
+  --muted: color-mix(in srgb, var(--bark) 65%, var(--mist));
+  --surface: color-mix(in srgb, var(--bark) 8%, var(--mist));
+  --font-text: var(--font-body), Georgia, serif;
+  --display-weight: 700;
+  --display-tracking: -0.02em;
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px;
+  --t-small: 14px; --t-lead: 20px; --t-h3: 28px;
+  --r-md: 12px; --r-lg: 20px;
+  --nav: 0px; --bar: 0px;
+}
+
 @theme inline {
   --color-mist: var(--mist);
   --color-canopy: var(--canopy);

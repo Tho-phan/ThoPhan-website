@@ -1,7 +1,7 @@
 import CityRoute from "@/components/CityRoute";
 import ContactForm from "@/components/ContactForm";
 import JobQueue from "@/components/JobQueue";
-import Polaroid from "@/components/Polaroid";
+import CityChapters from "@/components/CityChapters";
 import TenantSwitch from "@/components/TenantSwitch";
 import Trees from "@/components/Trees";
 import { cases, jobs, profile, tutoring } from "@/lib/content";
@@ -12,9 +12,9 @@ export default function Home() {
   return (
     <main>
       {/* Canopy: what people see */}
-      <section className="relative overflow-hidden">
+      <section className="relative flex min-h-svh items-center overflow-hidden">
         <Trees className="pointer-events-none absolute -right-10 top-8 hidden h-[620px] w-[360px] md:block lg:right-10" />
-        <div className="relative mx-auto max-w-5xl px-6 pb-24 pt-16 md:pt-24">
+        <div className="relative mx-auto w-full max-w-5xl px-6 py-16">
           <p className="mb-4 font-[family-name:var(--font-display)] text-lg">{profile.name}, {profile.role.toLowerCase()}</p>
           <h1 className="max-w-3xl text-balance text-4xl font-extrabold sm:text-5xl md:text-6xl">{profile.headline}</h1>
           <p className="mt-6 max-w-xl text-xl">{profile.intro}</p>
@@ -25,13 +25,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-6 pb-24" aria-label="Photos of the two cities">
-        <div className="grid items-start gap-8 md:grid-cols-3">
-          <Polaroid src="/photos/vn-bluehour.jpg" alt="Ho Chi Minh City skyline over the Saigon River at dusk" caption="Ho Chi Minh City, where I work" tilt={-3} />
-          <Polaroid src="/photos/us-point.jpg" alt="Pittsburgh downtown towers behind the lawn at Point State Park" caption="Pittsburgh, where I study" tilt={2.5} className="md:mt-12" />
-          <Polaroid src="/photos/vn-saigon.jpg" alt="Saigon high-rises lit up at night, reflected in the river" caption="Saigon after dark" tilt={-1.5} />
-        </div>
-      </section>
+      <CityChapters />
 
       {/* Experience */}
       <section className="relative mx-auto max-w-5xl px-6 pb-24">
@@ -69,7 +63,7 @@ export default function Home() {
       {/* Ground line: a row of trees standing on the soil */}
       <div aria-hidden="true" className="mx-auto flex max-w-6xl items-end justify-around px-4">
         {[90, 140, 105, 170, 100, 150, 95].map((w, i) => (
-          <div key={i} style={{ width: w }} className={`shrink-0 ${i > 3 ? "hidden md:block" : ""}`}>
+          <div key={i} style={{ width: w }} className={`shrink-0 ${i > 2 ? "hidden md:block" : ""}`}>
             <Trees className="aspect-[300/520] w-full" />
           </div>
         ))}
@@ -114,8 +108,10 @@ export default function Home() {
 
       <footer className="border-t border-bark/20 px-6 py-8 text-sm">
         <div className="mx-auto max-w-5xl">
-          Photos from Wikimedia Commons: Saigon at Blue Hour by{" "}
-          <a className="underline" href="https://commons.wikimedia.org/wiki/File:Saigon_at_Blue_Hour.jpg">Radek Kucharski</a> (CC BY 2.0); the Saigon night shot and the Pittsburgh skyline are CC0.
+          Photos from Wikimedia Commons:{" "}
+          <a className="underline" href="https://commons.wikimedia.org/wiki/File:Saigon_at_Blue_Hour.jpg">Radek Kucharski</a> (CC BY 2.0),{" "}
+          <a className="underline" href="https://commons.wikimedia.org/wiki/File:Point_State_Park_in_Fall.jpg">John</a> (CC BY-SA 2.0),{" "}
+          <a className="underline" href="https://commons.wikimedia.org/wiki/File:Through_Riverfront_Trail_in_fall_foliage_(30346899375).jpg">daveynin</a> (CC BY 2.0), and a CC0 night view of Saigon.
         </div>
       </footer>
     </main>
