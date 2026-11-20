@@ -26,7 +26,16 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/family">):
   const { lang } = await params;
   if (!hasLocale(lang)) return {};
   const { title, description } = dictionaries[lang].family.meta;
-  return { title, description, alternates: { languages: { en: "/en/family", vi: "/vi/family" } } };
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `/${lang}/family`,
+      languages: { en: "/en/family", vi: "/vi/family", "x-default": "/en/family" },
+    },
+    openGraph: { title, description, url: `/${lang}/family`, siteName: "Tho Phan", locale: lang === "vi" ? "vi_VN" : "en_US", type: "website" },
+    twitter: { card: "summary_large_image", title, description },
+  };
 }
 
 // A photograph as a print. The caption describes it, so the image itself adds nothing for a screen reader.
@@ -58,7 +67,7 @@ export default async function Family({ params }: PageProps<"/[lang]/family">) {
   const f = d.family;
 
   return (
-    <main>
+    <main id="main-content">
       {/* Hero: the whole family, and a thank-you */}
       <section className="relative isolate flex min-h-svh items-end overflow-hidden bg-bark text-mist">
         <Image src="/photos/family/hero.jpg" alt={f.hero.alt} fill priority sizes="100vw" className="drift object-cover" />

@@ -21,11 +21,12 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   const d = dictionaries[lang];
 
   return (
-    <main>
+    <main id="main-content">
       {/* Canopy: what people see */}
       <section className="relative isolate flex min-h-svh items-end overflow-hidden bg-bark text-mist">
-        <Image src="/photos/hero-vn.jpg" alt={d.hero.altVn} fill priority sizes="100vw" className="hero-photo hero-vn object-cover" />
-        <Image src="/photos/hero-us.jpg" alt={d.hero.altUs} fill priority sizes="100vw" className="hero-photo hero-us object-cover" />
+        <Image src="/photos/hero-vn.jpg" alt={d.hero.altVn} fill preload sizes="100vw" className="hero-photo hero-vn object-cover" />
+        {/* Hidden until the city switches, so it must not compete with hero-vn (the LCP) for bandwidth. */}
+        <Image src="/photos/hero-us.jpg" alt={d.hero.altUs} fill fetchPriority="low" sizes="100vw" className="hero-photo hero-us object-cover" />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-bark/80 via-bark/25 to-transparent" />
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-bark/70 to-transparent" />
         <Fx />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Status = "queued" | "active" | "failed" | "replayed" | "done";
 type Job = { id: number; status: Status };
@@ -18,26 +18,34 @@ function step(j: Job): Job {
 
 export default function JobQueue({ dict }: { dict: { aria: string; job: string; status: Record<Status, string> } }) {
   const [jobs, setJobs] = useState<Job[]>(() => [3, 2, 1].map((id) => ({ id, status: "done" as Status })));
+  const ref = useRef<HTMLOListElement>(null);
 
   useEffect(() => {
-    const t = setInterval(() => {
+    // Decorative loop: don't churn the DOM when it's off-screen or when the visitor asked for reduced motion.
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const tick = () =>
       setJobs((prev) => {
         const next = prev.map(step);
         const id = (prev[0]?.id ?? 0) + 1;
         return [{ id, status: "queued" as Status }, ...next].slice(0, 7);
       });
-    }, 1300);
-    return () => clearInterval(t);
+    let t: ReturnType<typeof setInterval> | undefined;
+    const io = new IntersectionObserver(([e]) => {
+      clearInterval(t);
+      if (e.isIntersecting) t = setInterval(tick, 1300);
+    });
+    if (ref.current) io.observe(ref.current);
+    return () => { clearInterval(t); io.disconnect(); };
   }, []);
 
   return (
-    <ol className="space-y-2" aria-label={dict.aria} aria-live="off">
+    <ol ref={ref} className="space-y-2" aria-label={dict.aria} aria-live="off">
       {jobs.map((j) => (
         <li key={j.id} className="flex items-center justify-between rounded-lg bg-mist/10 px-4 py-2 font-[family-name:var(--font-display)] text-sm">
           <span>{dict.job} {j.id}</span>
           <span
             className={`rounded-full px-3 py-0.5 text-xs font-semibold ${
-              j.status === "failed" ? "bg-accent text-mist" : j.status === "done" ? "bg-moss text-mist" : "bg-sun text-bark"
+              j.status === "failed" ? "bg-accent text-mist" : j.status === "done" ? "bg-canopy text-mist" : "bg-sun text-bark"
             }`}
           >
             {dict.status[j.status]}

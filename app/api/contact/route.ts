@@ -33,6 +33,9 @@ export async function POST(request: Request) {
       text: message,
     }),
   });
-  if (!res.ok) return Response.json({ error: "Could not send your message. Please try again later.", code: "send" }, { status: 502 });
+  if (!res.ok) {
+    console.error("Resend send failed:", res.status, await res.text().catch(() => "")); // sandbox sender / unverified recipient shows up here in Vercel logs
+    return Response.json({ error: "Could not send your message. Please try again later.", code: "send" }, { status: 502 });
+  }
   return Response.json({ ok: true });
 }

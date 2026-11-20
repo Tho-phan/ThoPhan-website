@@ -67,6 +67,8 @@ h1, h2, h3 {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
+/* On the dark hero/sections the accent (deep green/red) is low-contrast over near-black photos; switch the outline to the sun. */
+.bg-bark :focus-visible { outline-color: var(--sun); }
 
 /* Trees: show the palm in HCMC mode and the maple in Pittsburgh mode */
 .tree-us { display: none; }
@@ -173,6 +175,11 @@ html.vt, html.vt * { transition: none !important; }
 .trunk-line { stroke-dasharray: 1; stroke-dashoffset: 0; }
 @supports (animation-timeline: view()) {
   .trunk-line { stroke-dashoffset: 1; animation: draw linear both; animation-timeline: view(); animation-range: cover 5% cover 85%; }
+}
+
+/* Scroll-timeline reveals start at opacity 0; printing/exporting never scrolls, so force them visible on paper. */
+@media print {
+  .reveal-row, .reveal-card, .root-line, .trunk-line { animation: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -15,7 +15,7 @@ const en = {
     description:
       "Full-stack engineer building multi-tenant commerce across Vietnam and the US. Flutter, React, TypeScript, Hono, PostgreSQL.",
   },
-  nav: { linkedin: "LinkedIn", contact: "Contact", language: "Language", contactLabel: "Contact" },
+  nav: { linkedin: "LinkedIn", contact: "Contact", language: "Language", contactLabel: "Contact", skip: "Skip to content" },
   hero: {
     role: "Full-stack engineer",
     headline: "I build the commerce platform behind eSIMs sold in Vietnam and the US.",
@@ -144,7 +144,7 @@ const vi: Dict = {
     description:
       "Kỹ sư full-stack xây dựng nền tảng thương mại đa đối tác cho Việt Nam và Hoa Kỳ. Flutter, React, TypeScript, Hono, PostgreSQL.",
   },
-  nav: { linkedin: "LinkedIn", contact: "Liên hệ", language: "Ngôn ngữ", contactLabel: "Liên hệ" },
+  nav: { linkedin: "LinkedIn", contact: "Liên hệ", language: "Ngôn ngữ", contactLabel: "Liên hệ", skip: "Đến nội dung chính" },
   hero: {
     role: "Kỹ sư full-stack",
     headline: "Tôi xây dựng nền tảng thương mại cho eSIM bán tại Việt Nam và Hoa Kỳ.",

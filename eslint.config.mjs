@@ -13,6 +13,11 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "public/assets/**", // taste-skill kit files, kept unedited
+    // Agent-tooling dirs: bundled/minified skill JS that is not app code. Linting it is what made `npm run lint` fail.
+    ".agents/**",
+    ".claude/**",
+    ".codex/**",
+    ".impeccable/**",
   ]),
 ]);
 

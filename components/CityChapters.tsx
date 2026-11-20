@@ -1,3 +1,4 @@
+import { getImageProps } from "next/image";
 import ChaptersLoader from "./ChaptersLoader";
 
 type Chapters = {
@@ -18,16 +19,20 @@ export default function CityChapters({ dict }: { dict: Chapters }) {
           <p>{dict.lead}</p>
         </div>
         <ol className="mo-ph__list">
-          {dict.items.map((c) => (
-            <li key={c.src} className="mo-ph__ch" data-city={c.city}>
-              <figure className="mo-ph__pic">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={c.src} alt={c.alt} width={1800} height={1200} loading="lazy" decoding="async" />
-              </figure>
-              <h3>{c.title}</h3>
-              <p>{c.text}</p>
-            </li>
-          ))}
+          {dict.items.map((c) => {
+            // The moment re-parents these nodes, so they must stay plain <img>; getImageProps still gives an optimized, responsive src/srcSet.
+            const { props: img } = getImageProps({ src: c.src, alt: c.alt, width: 1600, height: 1067, sizes: "(min-width: 1024px) 1024px, 100vw" });
+            return (
+              <li key={c.src} className="mo-ph__ch" data-city={c.city}>
+                <figure className="mo-ph__pic">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img {...img} alt={c.alt} loading="lazy" decoding="async" />
+                </figure>
+                <h3>{c.title}</h3>
+                <p>{c.text}</p>
+              </li>
+            );
+          })}
         </ol>
       </div>
       <ChaptersLoader />

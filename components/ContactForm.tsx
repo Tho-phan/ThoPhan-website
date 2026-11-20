@@ -26,7 +26,7 @@ export default function ContactForm({ dict }: { dict: Dict }) {
     }
   }
 
-  const field = "mt-1 w-full rounded-lg border border-bark/30 bg-white px-4 py-3 text-base";
+  const field = "mt-1 w-full rounded-lg border border-bark/60 bg-white px-4 py-3 text-base";
 
   return (
     <form onSubmit={onSubmit} className="max-w-xl space-y-4">
@@ -50,7 +50,7 @@ export default function ContactForm({ dict }: { dict: Dict }) {
       >
         {state.kind === "sending" ? dict.sending : dict.send}
       </button>
-      <p role="status" className="min-h-6">
+      <p role={state.kind === "error" ? "alert" : "status"} className="min-h-6">
         {state.kind === "ok" && dict.ok}
         {state.kind === "error" && <span className="text-accent">{state.msg}</span>}
       </p>
