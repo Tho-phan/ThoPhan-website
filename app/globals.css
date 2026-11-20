@@ -162,14 +162,8 @@ html.vt, html.vt * { transition: none !important; }
 }
 
 /* Family page: photos as prints that straighten on hover, and a trunk that grows down the page as you scroll */
-.frame {
-  background: #fbf8f1; color: var(--bark); padding: 0.5rem 0.5rem 0.25rem;
-  box-shadow: 0 14px 30px -14px rgba(15, 11, 8, 0.55);
-  transform: rotate(var(--r, 0deg));
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.frame:hover { transform: rotate(0deg) translateY(-6px); box-shadow: 0 22px 40px -16px rgba(15, 11, 8, 0.6); }
-.frame figcaption { font: 500 0.875rem/1.35 var(--font-display), system-ui, sans-serif; padding: 0.5rem 0.25rem 0.5rem; }
+.frame { background: none; color: inherit; }
+.frame figcaption { font: 500 0.875rem/1.35 var(--font-display), system-ui, sans-serif; padding: 0.75rem 0 0.5rem; }
 .trunk-line { stroke-dasharray: 1; stroke-dashoffset: 0; }
 @supports (animation-timeline: view()) {
   .trunk-line { stroke-dashoffset: 1; animation: draw linear both; animation-timeline: view(); animation-range: cover 5% cover 85%; }
@@ -177,11 +171,40 @@ html.vt, html.vt * { transition: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .sway, .packet-ring, .root-line, .trunk-line, .word, .hero-in, .hero-photo, .drift, .reveal-row, .reveal-card { animation: none; }
+  .sway, .packet-ring, .root-line, .trunk-line, .word, .hero-in, .hero-photo, .drift, .reveal-row, .reveal-card, .collage, .float { animation: none; }
   .hero-photo { transition: none; }
   .hero-trees { transform: none; transition: none; }
-  .packet, .trail, .frame { transition: none; }
+  .packet, .trail, .frame, .pill { transition: none; }
   .root-line, .trunk-line { stroke-dashoffset: 0; }
   .fx { display: none; }
   ::view-transition-new(root) { animation: none; }
 }
+
+/* Family hero: cream paper with grain, photos that rise in and drift apart as you scroll away */
+.paper {
+  background-color: #fbf8f1; color: #12110e;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E");
+}
+.collage { animation: card-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i) * 120ms + 300ms); }
+@supports (animation-timeline: scroll()) {
+  .collage { animation: card-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both, collage-away linear both; animation-delay: calc(var(--i) * 120ms + 300ms), 0s; animation-timeline: auto, scroll(root); animation-range: normal, 0 100svh; }
+}
+@keyframes collage-away { to { transform: translateY(calc((var(--i) - 3) * -9vh)) scale(0.9); } }
+
+/* Photos drift past at their own speed (--s) while their chapter crosses the screen */
+@supports (animation-timeline: view()) {
+  .float { animation: float-by linear both; animation-timeline: view(); animation-range: cover; }
+}
+@keyframes float-by {
+  from { transform: translateY(calc(var(--s) * 28vh)); opacity: 0; }
+  25%, 75% { opacity: 1; }
+  to { transform: translateY(calc(var(--s) * -28vh)); opacity: 0; }
+}
+/* Fixed chapter pill */
+.pill {
+  position: fixed; bottom: 1.5rem; left: 50%; z-index: 30; display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.375rem 0.375rem 0.375rem 1rem; border-radius: 999px; font: 500 0.875rem/1 var(--font-display), system-ui, sans-serif;
+  background: color-mix(in srgb, #12110e 8%, #fbf8f1); transform: translate(-50%, 1rem); opacity: 0; pointer-events: none;
+  transition: opacity 0.4s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pill-on { opacity: 1; transform: translate(-50%, 0); }

@@ -1,16 +1,52 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Playfair_Display } from "next/font/google";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Fx from "@/components/Fx";
+import ChapterPill from "@/components/ChapterPill";
 import LangSwitch from "@/components/LangSwitch";
 import { dictionaries, profile, type Dict } from "@/lib/dict";
 import { photoSize, type CaptionId } from "@/lib/family";
 import { hasLocale } from "@/lib/i18n";
 
+// Latin + vietnamese: the Vietnamese title needs the diacritics.
+const playfair = Playfair_Display({ variable: "--font-serif", subsets: ["latin", "vietnamese"] });
 const display = "font-[family-name:var(--font-display)]";
-const h2 = "text-4xl font-bold md:text-5xl";
-const tilts = [-2.5, 1.8, -1.2, 2.4, -1.8, 1.4];
+const serif = playfair.variable;
+// Positions in % of the hero; the centre photo (hero) sits over the headline, the rest scatter around it.
+const collage = [
+  { id: "mom-1", x: 6, y: 22, w: 13, z: 5 },
+  { id: "grow-2", x: 74, y: 12, w: 9, z: 5 },
+  { id: "dad-1", x: 74, y: 52, w: 16, z: 5 },
+  { id: "leave-1", x: 11, y: 62, w: 12, z: 5 },
+  { id: "sister-1", x: 3, y: 84, w: 7, z: 5 },
+  { id: "brother-1", x: 86, y: 80, w: 8, z: 5 },
+  { id: "hero", x: 37, y: 34, w: 26, z: 15 },
+] as const;
+// Chapter interlude: [0N], one centred serif line with its last word in italics, and photos floating past at different speeds.
+const floats: Record<number, { id: string; x: number; y: number; w: number; s: number }[]> = {
+  1: [{ id: "grow-1", x: 8, y: 14, w: 11, s: 1 }, { id: "leave-2", x: 80, y: 20, w: 9, s: -1 }, { id: "more-1", x: 14, y: 72, w: 8, s: -1.5 }, { id: "grow-5", x: 78, y: 70, w: 12, s: 1.5 }],
+  2: [{ id: "mom-2", x: 6, y: 20, w: 10, s: 1.5 }, { id: "dad-2", x: 82, y: 12, w: 8, s: -1 }, { id: "sister-2", x: 12, y: 74, w: 9, s: -1 }, { id: "brother-2", x: 76, y: 66, w: 11, s: 1 }],
+  3: [{ id: "grow-3", x: 7, y: 66, w: 12, s: 1 }, { id: "more-3", x: 80, y: 18, w: 10, s: -1.5 }, { id: "grow-6", x: 16, y: 12, w: 8, s: -1 }, { id: "leave-5", x: 74, y: 74, w: 9, s: 1.5 }],
+  4: [{ id: "more-2", x: 8, y: 18, w: 10, s: 1 }, { id: "more-4", x: 80, y: 62, w: 12, s: -1 }, { id: "more-5", x: 72, y: 12, w: 8, s: 1.5 }, { id: "leave-3", x: 14, y: 74, w: 9, s: -1.5 }],
+};
+function Chapter({ n, title, lead }: { n: number; title: string; lead?: string }) {
+  const words = title.split(" ");
+  return (
+    <section data-chapter data-label={title} className="relative flex min-h-[85svh] flex-col items-center justify-center overflow-hidden px-6 text-center">
+      {floats[n].map(({ id, x, y, w, s }) => (
+        <div key={id} aria-hidden="true" className="float absolute hidden sm:block" style={{ left: `${x}%`, top: `${y}%`, width: `${w}vw`, "--s": s } as React.CSSProperties}>
+          <Image src={`/photos/family/${id}.jpg`} alt="" width={480} height={480} sizes={`${w}vw`} className="h-auto w-full" />
+        </div>
+      ))}
+      <span className="text-sm tracking-widest">[{String(n).padStart(2, "0")}]</span>
+      <h2 style={{ fontFamily: "var(--font-serif), serif" }} className="mt-4 text-balance text-5xl leading-tight md:text-7xl">
+        {words.slice(0, -1).join(" ")} <em>{words[words.length - 1]}</em>
+      </h2>
+      {lead && <p className="mt-4 max-w-md text-lg">{lead}</p>}
+    </section>
+  );
+}
 
 const people = [
   { key: "mom", ids: ["mom-1", "mom-2"] },
@@ -35,7 +71,7 @@ function Print({ id, caps, i = 0, row = false, className = "" }: { id: CaptionId
   return (
     <figure
       className={`frame ${row ? "shrink-0 snap-center" : "reveal-card"} ${className}`}
-      style={{ "--i": i % 3, "--r": `${tilts[i % tilts.length]}deg`, maxWidth: row ? undefined : w } as React.CSSProperties}
+      style={{ "--i": i % 3, maxWidth: row ? undefined : w } as React.CSSProperties}
     >
       <Image
         src={`/photos/family/${id}.jpg`}
@@ -58,14 +94,10 @@ export default async function Family({ params }: PageProps<"/[lang]/family">) {
   const f = d.family;
 
   return (
-    <main>
-      {/* Hero: the whole family, and a thank-you */}
-      <section className="relative isolate flex min-h-svh items-end overflow-hidden bg-bark text-mist">
-        <Image src="/photos/family/hero.jpg" alt={f.hero.alt} fill priority sizes="100vw" className="drift object-cover" />
-        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-bark/85 via-bark/35 to-transparent" />
-        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bark/80 to-transparent" />
-        <Fx />
-        <header className="absolute inset-x-0 top-0 z-10 bg-gradient-to-b from-bark/55 to-transparent">
+    <main className={`paper ${serif}`}>
+      {/* Hero: a huge serif headline with photos collaged over the letters */}
+      <section className="paper relative isolate min-h-svh overflow-hidden">
+        <header className="absolute inset-x-0 top-0 z-20">
           <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-6 py-6">
             <Link href={`/${lang}`} className={`${display} py-3 text-xl font-bold`}>{profile.name}</Link>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -74,21 +106,25 @@ export default async function Family({ params }: PageProps<"/[lang]/family">) {
             </div>
           </div>
         </header>
-        <div className="relative mx-auto w-full max-w-5xl px-6 pb-16 pt-32 md:pb-24">
-          <h1 className="text-6xl font-extrabold [text-shadow:0_2px_24px_rgba(15,11,8,0.55)] md:text-8xl">
-            {f.hero.title.split(" ").map((w, i) => (
-              <span key={i}><span className="word" style={{ "--i": i } as React.CSSProperties}>{w}</span>{" "}</span>
-            ))}
-          </h1>
-          <p className="hero-in mt-6 max-w-xl text-xl [text-shadow:0_1px_14px_rgba(15,11,8,0.7)]" style={{ "--d": "600ms" } as React.CSSProperties}>{f.hero.intro}</p>
-        </div>
+        <h1 style={{ fontFamily: "var(--font-serif), serif" }} className={`${serif} relative z-10 flex min-h-svh flex-col items-center justify-center text-center text-[clamp(5rem,24vw,19rem)] font-normal uppercase leading-[0.85] tracking-tight`}>
+          {f.hero.title.split(" ").map((w, i) => (
+            <span key={i} className={`word ${i % 2 ? "italic" : ""}`} style={{ "--i": i } as React.CSSProperties}>{w}</span>
+          ))}
+        </h1>
+        {collage.map(({ id, x, y, w, z }, i) => (
+          <div
+            key={id}
+            className={`collage absolute ${id === "hero" ? "" : "hidden sm:block"}`}
+            style={{ left: `${x}%`, top: `${y}%`, width: `${w}vw`, zIndex: z, "--i": i } as React.CSSProperties}
+          >
+            <Image src={`/photos/family/${id}.jpg`} alt={id === "hero" ? f.hero.alt : ""} width={640} height={640} priority={id === "hero"} sizes={`${w}vw`} className="h-auto w-full" />
+          </div>
+        ))}
+        <p className="hero-in absolute inset-x-6 bottom-8 z-20 mx-auto max-w-md text-center text-lg" style={{ "--d": "700ms" } as React.CSSProperties}>{f.hero.intro}</p>
       </section>
 
       {/* Roots: one chapter per person, hanging off a trunk that grows as you scroll */}
-      <section className="mx-auto max-w-6xl px-6 pt-24">
-        <h2 className={h2}>{f.roots.title}</h2>
-        <p className="mt-3 max-w-xl">{f.roots.lead}</p>
-      </section>
+      <Chapter n={1} title={f.roots.title} lead={f.roots.lead} />
       <section className="relative mx-auto max-w-6xl space-y-28 px-6 pb-32 pt-16 md:space-y-40">
         <svg aria-hidden="true" viewBox="0 0 40 1000" preserveAspectRatio="none" className="absolute inset-y-0 left-10 h-full w-10 -translate-x-1/2 md:left-1/2" fill="none">
           <path d="M20 0 C 4 160, 36 330, 20 500 S 4 840, 20 1000" pathLength={1} className="trunk-line" stroke="var(--moss)" strokeWidth="6" strokeLinecap="round" />
@@ -105,39 +141,36 @@ export default async function Family({ params }: PageProps<"/[lang]/family">) {
       </section>
 
       {/* Growing up: prints on a dark table */}
-      <section className="bg-bark text-mist">
-        <div className="mx-auto max-w-6xl px-6 py-24">
-          <h2 className={h2}>{f.growing.title}</h2>
-          <p className="mt-3 max-w-xl">{f.growing.lead}</p>
-          <div className="mt-14 grid items-start gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:[&>*:nth-child(3n+2)]:mt-14">
+      <Chapter n={2} title={f.growing.title} lead={f.growing.lead} />
+      <section>
+        <div className="mx-auto max-w-6xl px-6 pb-24">
+          <div className="grid items-start gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:[&>*:nth-child(3n+2)]:mt-14">
             {growing.map((id, i) => <Print key={id} id={id} caps={f.captions} i={i} />)}
           </div>
         </div>
       </section>
 
       {/* Airports: a strip to scroll sideways */}
-      <section className="mx-auto max-w-6xl px-6 pt-24">
-        <h2 className={h2}>{f.airports.title}</h2>
-        <p className="mt-3 max-w-xl">{f.airports.lead}</p>
-      </section>
-      <div role="region" aria-label={f.airports.scroller} tabIndex={0} className="mt-12 flex snap-x gap-8 overflow-x-auto px-6 pb-12 pt-2 md:px-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))]">
+      <Chapter n={3} title={f.airports.title} lead={f.airports.lead} />
+      <div role="region" aria-label={f.airports.scroller} tabIndex={0} className="flex snap-x gap-8 overflow-x-auto px-6 pb-12 pt-2 md:px-[max(1.5rem,calc((100vw-72rem)/2+1.5rem))]">
         {airports.map((id, i) => <Print key={id} id={id} caps={f.captions} i={i} row />)}
       </div>
 
       {/* Everything else */}
-      <section className="mx-auto max-w-6xl px-6 pb-24 pt-12">
-        <h2 className={h2}>{f.more.title}</h2>
-        <div className="mt-12 columns-1 gap-8 sm:columns-2 lg:columns-3 [&>*]:mb-8 [&>*]:break-inside-avoid">
+      <Chapter n={4} title={f.more.title} />
+      <section className="mx-auto max-w-6xl px-6 pb-24">
+        <div className="columns-1 gap-8 sm:columns-2 lg:columns-3 [&>*]:mb-8 [&>*]:break-inside-avoid">
           {more.map((id, i) => <Print key={id} id={id} caps={f.captions} i={i} />)}
         </div>
       </section>
 
-      <section className="bg-bark text-mist">
+      <section>
         <div className="mx-auto max-w-5xl px-6 py-32 text-center md:py-44">
-          <p className={`${display} mx-auto max-w-3xl text-balance text-4xl font-extrabold md:text-6xl`}>{f.closing}</p>
+          <p style={{ fontFamily: "var(--font-serif), serif" }} className="mx-auto max-w-3xl text-balance text-4xl md:text-6xl">{f.closing}</p>
           <Link href={`/${lang}`} className={`${display} mt-12 inline-block rounded-full bg-sun px-6 py-3 font-semibold text-bark`}>{f.back}</Link>
         </div>
       </section>
+      <ChapterPill />
     </main>
   );
 }
